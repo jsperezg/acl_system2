@@ -1,13 +1,13 @@
-class User
+# frozen_string_literal: true
 
-  attr_accessor :name
+class User
+  attr_writer :name
 
   def name
     @name ||= 'anon'
   end
 
   def roles
-    [OpenStruct.new(:title => 'admin'), OpenStruct.new(:title => 'user')]
+    [OpenStruct.new(title: 'admin'), OpenStruct.new(title: 'user')]
   end
-
 end

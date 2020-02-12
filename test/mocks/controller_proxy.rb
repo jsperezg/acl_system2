@@ -1,17 +1,16 @@
-require "#{ File.dirname(__FILE__) }/user"
+# frozen_string_literal: true
+
+require "#{File.dirname(__FILE__)}/user"
 
 class ControllerProxy
-
   attr_accessor :action_name
 
   class << self
-
     attr_reader :before_block
 
-    def before_filter(&block)
+    def before_action(&block)
       @before_block = block if block_given?
     end
-
   end
 
   def before_action
@@ -20,13 +19,15 @@ class ControllerProxy
 
   include ACLSystem2::AccessControl
 
-  access_control([:create, :edit] => 'admin & !blacklist',
-      :update => '(admin | moderator) & !blacklist',
-      :list => '(admin | moderator | user) & !blacklist',
-      :private => 'vip') do |context|
-         context[:variable] = 'value'
-         context[:login_time] = Time.new
-      end
+  access_control(
+    %i[create edit] => 'admin & !blacklist',
+    update: '(admin | moderator) & !blacklist',
+    list: '(admin | moderator | user) & !blacklist',
+    private: 'vip'
+  ) do |context|
+    context[:variable] = 'value'
+    context[:login_time] = Time.new
+  end
 
   def permission_granted
     true
@@ -35,9 +36,8 @@ class ControllerProxy
   def permission_denied
     false
   end
-  
+
   def current_user
     User.new
   end
-
 end
